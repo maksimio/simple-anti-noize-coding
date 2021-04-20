@@ -1,10 +1,11 @@
+'''This module DEcodes the original message'''
 import zlib 
 
 
 def three_bit_decoding(s):
   bin_s = bin(int.from_bytes(s, 'big'))[2:]
 
-  # ------ Расшифровка
+  # ------
   while len(bin_s) % 8 != 0:
     bin_s = '0' + bin_s
   
@@ -35,13 +36,11 @@ def read_corrupted_file(s, CHUNKSIZE=1024):
   return result_str
 
 
-def decoder(filein, fileout):
+def decoder(filein, fileout, use3bit=True):
   s = filein.read()
 
-  if len(s) == 0:
-    fileout.write('input s = 0\n')
-
-  s = three_bit_decoding(s)
+  if use3bit:
+    s = three_bit_decoding(s)
 
   chunk_positions = {}
   chunk_i = s.find(b'chunk', 0)
