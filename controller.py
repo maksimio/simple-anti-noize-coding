@@ -53,5 +53,5 @@ def make_noize(fname_inout):
 if __name__ == '__main__':
   use3bit = True
   codering('1_input.dat', '2_encoded.dat', encoder, use3bit=use3bit)
-  # make_noize('2_encoded.dat') # You can comment this line for coding without noize
+  make_noize('2_encoded.dat') # You can comment this line for coding without noize
   codering('2_encoded.dat', '3_decoded.dat', decoder, use3bit=use3bit)
