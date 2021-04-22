@@ -18,7 +18,7 @@ def codering(fname_in, fname_out, coder_func, use3bit=True):
 
 
 def make_noize(fname_inout):
-  '''Make noise in two ways: 
+  '''Simulate distortions in two ways: 
   1. Loss of block data
   2. Uniform bit noise'''
   noize = 1 # in %
