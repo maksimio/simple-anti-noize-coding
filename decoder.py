@@ -3,14 +3,13 @@ import zlib
 
 
 def three_bit_decoding(s):
-  bin_s = bin(int.from_bytes(s, 'big'))[2:]
+  bin_s = bin(int.from_bytes(s, 'big'))[2:] # [2:] removes '0b' prefix
 
-  # ------
   while len(bin_s) % 8 != 0:
-    bin_s = '0' + bin_s
+    bin_s = '0' + bin_s # To avoid incorrect string decoding when one or two characters are lost
   
   while len(bin_s) % 3 != 0:
-    bin_s += '0'
+    bin_s += '0' # Need to avoid index-out-of-range-error below
   
   bin_s_dec = ''
   for i in range(len(bin_s)):
@@ -18,6 +17,7 @@ def three_bit_decoding(s):
       bin_s_dec += str(round((int(bin_s[i]) + int(bin_s[i + 1]) + int(bin_s[i + 2])) / 3)) 
     i += 1
 
+  # To avoid incorrect string decoding when one or two characters are lost:
   bin_s_dec += '0' * (((len(bin_s_dec) + 8) - (len(bin_s_dec) + 8) - len(bin_s_dec)) % 8)
   s_dec = int(bin_s_dec, 2)
   return s_dec.to_bytes((s_dec.bit_length() + 7) // 8, 'big')
@@ -32,7 +32,6 @@ def read_corrupted_file(s, CHUNKSIZE=1024):
       result_str += d.decompress(chunk)
   except:
     print('FAULT')
-    pass
   return result_str
 
 
@@ -72,13 +71,14 @@ def decoder(filein, fileout, use3bit=True):
 
       if zlib.crc32(data) == crc:
         correct_chunks[chunk_pos_i] = data[9:-3]
-        break #! Можно оставить для наглядных логов
+        break # We need only one unbroken chunk
       else:
         # print('error in', chunk_pos_i)
         pass
 
   sorted_chunk_nums = list(correct_chunks.keys())
   sorted_chunk_nums.sort()
+
   # print(sorted_chunk_nums)
   # print(len(sorted_chunk_nums))
 
@@ -87,8 +87,4 @@ def decoder(filein, fileout, use3bit=True):
     compressed += correct_chunks[i]
 
   decompressed = read_corrupted_file(compressed)
-
-  if len(decompressed) == 0:
-    fileout.write('decompressed = 0\n')
-
   fileout.write(decompressed)

@@ -14,11 +14,13 @@ def three_bit_encoding(s):
 
 
 def encoder(filein, fileout, use3bit=True):
-  s = filein.read()
-  compressed = zlib.compress(s) # To reduce file size
-
+  # Settings options:
   chunk_size = 100
   s_repeats = 10
+
+  s = filein.read()
+  compressed = zlib.compress(s) # In our case on olimpiad the compression was ~tenfold
+
   chunk_lst = [compressed[i:i + chunk_size] for i in range(0, len(compressed), chunk_size)]
 
   i, encoded_block = 0, b''
